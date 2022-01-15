@@ -3,8 +3,6 @@ package com.app.olx.model
 import java.util.*
 
 class DataItemModel() {
-
-
     val adTitle = ""
     val type = ""
     val id = ""

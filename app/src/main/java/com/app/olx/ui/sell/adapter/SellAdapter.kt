@@ -12,11 +12,6 @@ import com.app.olx.model.CategoriesModel
 import com.bumptech.glide.Glide
 
 
-/**
- * Created by Akshay.
- * seller product list adapter
- * @property mProductClickListener click Listener
- */
 class SellAdapter(
     var categoriesList: MutableList<CategoriesModel>,
     var mClickListener: ItemClickListener

@@ -10,10 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.olx.R
 import java.util.*
 
-/**
- * Created by Thakur on 4/30/2018.
- */
-
 class UploadImagesAdapter(
     internal var activity: Activity,
     internal var imagesArraylist: ArrayList<String>,

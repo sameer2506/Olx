@@ -14,11 +14,6 @@ import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 
 
-/**
- * Created by Akshay.
- * seller product list adapter
- * @property mProductClickListener click Listener
- */
 class BrowseCategoriesAdapter(
     var dataItemModel: MutableList<DataItemModel>,
     var mClickListener: ItemClickListener

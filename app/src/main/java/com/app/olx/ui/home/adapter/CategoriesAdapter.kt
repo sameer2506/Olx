@@ -12,13 +12,6 @@ import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-
-
-/**
- * Created by Akshay.
- * seller product list adapter
- * @property mProductClickListener click Listener
- */
 class CategoriesAdapter(
     var categoriesList: MutableList<CategoriesModel>,
     var mClickListener: ItemClickListener

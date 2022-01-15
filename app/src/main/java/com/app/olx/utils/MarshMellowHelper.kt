@@ -10,9 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import java.util.*
 
-/**
- * Created by Abhin.
- */
 @Suppress("UNCHECKED_CAST")
 class MarshMellowHelper {
 
