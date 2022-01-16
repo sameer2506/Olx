@@ -19,15 +19,14 @@
             app:popUpTo="@id/navigation_home"
             app:popUpToInclusive="false" />
 
-
-
     </fragment>
 
     <fragment
         android:id="@+id/navigation_sell"
         android:name="com.app.olx.ui.sell.SellFragment"
         android:label="@string/title_sell"
-        tools:layout="@layout/fragment_sell" >
+        tools:layout="@layout/fragment_sell">
+
         <action
             android:id="@+id/action_sell_to_include_details"
             app:destination="@id/navigation_include_details"
@@ -36,14 +35,13 @@
             app:popUpTo="@id/navigation_sell"
             app:popUpToInclusive="false" />
 
-
     </fragment>
 
     <fragment
         android:id="@+id/navigation_include_details"
         android:name="com.app.olx.ui.includeDetails.IncludeDetailsFragment"
         android:label="@string/title_include_details"
-        tools:layout="@layout/fragment_include_details" >
+        tools:layout="@layout/fragment_include_details">
 
         <action
             android:id="@+id/action_include_details_to_uploadPhoto"
@@ -53,14 +51,13 @@
             app:popUpTo="@id/navigation_include_details"
             app:popUpToInclusive="false" />
 
-
     </fragment>
 
     <fragment
         android:id="@+id/navigation_my_ads"
         android:name="com.app.olx.ui.myAds.MyAdsFragment"
         android:label="@string/title_my_ads"
-        tools:layout="@layout/fragment_my_ads" >
+        tools:layout="@layout/fragment_my_ads">
 
         <action
             android:id="@+id/action_ads_to_sell"
@@ -69,6 +66,7 @@
             app:exitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/navigation_my_ads"
             app:popUpToInclusive="false" />
+
         <action
             android:id="@+id/action_my_ads_to_detail"
             app:destination="@id/navigation_detail"
@@ -83,7 +81,7 @@
         android:id="@+id/navigation_profile"
         android:name="com.app.olx.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
 
         <action
             android:id="@+id/action_profile_to_settings"
@@ -107,12 +105,11 @@
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 
-
     <fragment
         android:id="@+id/navigation_browse_category"
         android:name="com.app.olx.ui.browseCategory.BrowseCategoryFragment"
         android:label="@string/browse_category"
-        tools:layout="@layout/fragment_browse_categories" >
+        tools:layout="@layout/fragment_browse_categories">
 
         <action
             android:id="@+id/action_browse_category_to_detail"
@@ -122,14 +119,13 @@
             app:popUpTo="@id/navigation_browse_category"
             app:popUpToInclusive="false" />
 
-
     </fragment>
 
     <fragment
         android:id="@+id/navigation_upload_photo"
         android:name="com.app.olx.ui.uploadPhoto.UploadPhotoFragment"
         android:label="@string/title_upload_photo"
-        tools:layout="@layout/fragment_upload_photo" >
+        tools:layout="@layout/fragment_upload_photo">
 
         <action
             android:id="@+id/action_upload_photo_to_my_ads"

@@ -1,9 +1,7 @@
 package com.app.olx.ui.login
 
 import android.content.Intent
-import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.app.olx.BaseActivity

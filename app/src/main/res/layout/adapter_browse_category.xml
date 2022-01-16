@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,17 +13,17 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_weight=".25">
+            android:layout_weight=".25"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="@dimen/dp_100"
                 android:id="@+id/imageView"
-                android:layout_gravity="center"
+                android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_100"
-                android:scaleType="fitXY"
+                android:layout_gravity="center"
                 android:layout_margin="@dimen/dp_2"
+                android:scaleType="fitXY"
                 android:src="@drawable/building" />
 
         </LinearLayout>
@@ -36,31 +35,32 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_toEndOf="@+id/imageViewLocation"
                 android:text="$ 100.00"
-                android:id="@+id/tvPrice"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:textStyle="bold"></androidx.appcompat.widget.AppCompatTextView>
+                android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_4"
-                android:id="@+id/tvAddress"
                 android:layout_toEndOf="@+id/imageViewLocation"
                 android:maxLines="1"
                 android:text="Phase 6 Mohali Sector 56 "
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@android:color/black"></androidx.appcompat.widget.AppCompatTextView>
+                android:textColor="@android:color/black" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvBrand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -69,11 +69,11 @@
                 android:layout_toEndOf="@+id/imageViewLocation"
                 android:maxLines="1"
                 android:text="SUV"
-                android:id="@+id/tvBrand"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@android:color/black"></androidx.appcompat.widget.AppCompatTextView>
+                android:textColor="@android:color/black" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -82,10 +82,10 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_toEndOf="@+id/imageViewLocation"
                 android:text="25 DEC"
-                android:id="@+id/tvDate"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"></androidx.appcompat.widget.AppCompatTextView>
-
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>

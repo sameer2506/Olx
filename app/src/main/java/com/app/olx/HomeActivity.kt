@@ -1,4 +1,4 @@
-    package com.app.olx
+package com.app.olx
 
 import android.app.Activity
 import android.content.Intent
@@ -18,8 +18,7 @@ import net.alhazmy13.mediapicker.Image.ImagePicker
 class HomeActivity : BaseActivity() {
 
     private lateinit var navController: NavController
-    lateinit var onActivityResultData: onActivityResultData
-
+    private lateinit var onActivityResultData: onActivityResultData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +30,10 @@ class HomeActivity : BaseActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_sell, R.id.navigation_my_ads
-                , R.id.navigation_profile
+                R.id.navigation_home,
+                R.id.navigation_sell,
+                R.id.navigation_my_ads,
+                R.id.navigation_profile
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -67,7 +68,7 @@ class HomeActivity : BaseActivity() {
             if (requestCode == ImagePicker.IMAGE_PICKER_REQUEST_CODE) {
                 val mPaths = data?.getStringArrayListExtra(ImagePicker.EXTRA_IMAGE_PATH)
                 val bundle = Bundle()
-                bundle.putStringArrayList(Constants.IMAGE_PATHS,mPaths)
+                bundle.putStringArrayList(Constants.IMAGE_PATHS, mPaths)
                 onActivityResultData.resultData(bundle)
             }
 

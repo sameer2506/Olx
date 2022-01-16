@@ -14,20 +14,11 @@ import com.bumptech.glide.Glide
 class DetailImagesAdapter(
     var context: Context,
     private val membersList: ArrayList<String>,
-    var mClickListener: ItemClickListener
+    private var mClickListener: ItemClickListener
+) : PagerAdapter() {
 
-
-) :
-    PagerAdapter() {
-
-    private val inflater: LayoutInflater
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var doNotifyDataSetChangedOnce = false
-
-
-    init {
-        inflater = LayoutInflater.from(context)
-    }
-
 
     override fun getCount(): Int {
         if (doNotifyDataSetChangedOnce) {
@@ -39,13 +30,13 @@ class DetailImagesAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = inflater.inflate(R.layout.adapter_detail_images, container, false)!!
-        val imageView = view!!.findViewById<ImageView>(R.id.image)
+        val imageView = view.findViewById<ImageView>(R.id.image)
 
-        imageView.setOnClickListener(View.OnClickListener {
+        imageView.setOnClickListener {
             mClickListener.onItemClick(position)
-        })
+        }
         Glide.with(context)
-            .load(membersList.get(position))
+            .load(membersList[position])
             .placeholder(R.drawable.big_placeholder)
             .into(imageView)
         container.addView(view, 0)

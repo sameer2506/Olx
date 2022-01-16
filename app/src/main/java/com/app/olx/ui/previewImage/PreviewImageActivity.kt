@@ -10,6 +10,8 @@ import com.app.olx.BaseActivity
 import com.app.olx.R
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_preview_image.*
+import kotlin.math.max
+import kotlin.math.min
 
 class PreviewImageActivity : BaseActivity() {
 
@@ -20,12 +22,12 @@ class PreviewImageActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        getWindow().setFlags(
+        window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_preview_image)
-        val extras = getIntent().getExtras()
+        val extras = intent.extras
         if (extras?.containsKey("imageuri")!!) {
             val imageUri = extras.getString("imageuri")
             val myBitmap = BitmapFactory.decodeFile(imageUri)
@@ -36,32 +38,25 @@ class PreviewImageActivity : BaseActivity() {
                 .load(imageUrl)
                 .placeholder(R.drawable.big_placeholder)
                 .into(imgDisplay)
-
         }
 
         imgDisplay!!.scaleX = 1.0f
         imgDisplay!!.scaleY = 1.0f
         btnClose!!.setOnClickListener { finish() }
 
-
         mScaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
 
     }
-
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
         mScaleGestureDetector!!.onTouchEvent(motionEvent)
         return true
     }
 
-
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
             mScaleFactor *= scaleGestureDetector.scaleFactor
-            mScaleFactor = Math.max(
-                0.1f,
-                Math.min(mScaleFactor, 10.0f)
-            )
+            mScaleFactor = max(0.1f, min(mScaleFactor, 10.0f))
             imgDisplay!!.scaleX = mScaleFactor
             imgDisplay!!.scaleY = mScaleFactor
             return true

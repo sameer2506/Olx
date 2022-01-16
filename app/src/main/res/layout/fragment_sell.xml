@@ -2,47 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="?actionBarSize"
         android:gravity="center_vertical"
-        android:layout_height="?actionBarSize">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_8"
-            android:visibility="gone"
-            android:src="@drawable/ic_arrow_back"/>
-
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:padding="@dimen/dp_8"
-            app:textAllCaps="true"
             android:layout_marginStart="@dimen/dp_8"
-            android:textStyle="bold"
+            android:padding="@dimen/dp_8"
+            android:text="@string/what_are_offering"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/what_are_offering">
-
-        </androidx.appcompat.widget.AppCompatTextView>
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            app:textAllCaps="true" />
 
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@android:color/darker_gray"/>
-
+        android:background="@android:color/darker_gray" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_offering"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_8"
-        android:id="@+id/rv_offering"/>
+        android:layout_margin="@dimen/dp_8" />
+
 </LinearLayout>

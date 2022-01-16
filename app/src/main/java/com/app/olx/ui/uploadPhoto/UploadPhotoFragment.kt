@@ -1,10 +1,12 @@
 package com.app.olx.ui.uploadPhoto
 
+import android.Manifest
 import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.olx.BaseFragment
@@ -21,8 +24,11 @@ import com.app.olx.ui.previewImage.PreviewImageActivity
 import com.app.olx.ui.uploadPhoto.adapter.UploadImagesAdapter
 import com.app.olx.utils.Constants
 import com.app.olx.utils.SharedPref
+import com.app.olx.utils.log
 import com.app.olx.utils.onActivityResultData
-import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -35,65 +41,86 @@ import java.util.*
 
 class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.OnClickListener {
 
-    internal var dialog: BottomSheetDialog? = null
-    internal var selectedImage: File? = null
-    internal lateinit var outputFileUri: String
+    private var dialog: BottomSheetDialog? = null
+    private var selectedImage: File? = null
+    private lateinit var outputFileUri: String
     private val selectedImagesArraylist = ArrayList<String>()
     private var imagesAdapter: UploadImagesAdapter? = null
-    internal lateinit var storageRef: StorageReference
-    internal lateinit var imageRef: StorageReference
-    internal lateinit var storage: FirebaseStorage
-    internal lateinit var uploadTask: UploadTask
+    private lateinit var storageRef: StorageReference
+    private lateinit var imageRef: StorageReference
+    private lateinit var storage: FirebaseStorage
+    private lateinit var uploadTask: UploadTask
     private val imageUriList = ArrayList<String>()
     private var count = 0
-    private var TAG = UploadPhotoFragment::class.java.simpleName
-    val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
+    private lateinit var currentLocation: Location
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val permissionCode = 101
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        val root = inflater.inflate(R.layout.fragment_upload_photo, container, false)
-
-        return root
+        return inflater.inflate(R.layout.fragment_upload_photo, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        recyclerView.setLayoutManager(GridLayoutManager(activity, 3))
+        recyclerView.layoutManager = GridLayoutManager(activity, 3)
 
         //accessing the firebase storage
         storage = FirebaseStorage.getInstance()
 
         //creates a storage reference
-        storageRef = storage.getReference()
+        storageRef = storage.reference
 
         //get Photo From Home Screen Result Observer
         getSelectedImage()
 
         listener()
+        fetchLocation()
 
     }
 
-    private fun getSelectedImage() {
-        (activity as HomeActivity).getOnActivityResult(object :
-            onActivityResultData {
-            override fun resultData(bundle: Bundle?) {
-
-                linearLayoutChoosePhoto.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-                val mPaths = bundle?.getStringArrayList(Constants.IMAGE_PATHS)
-
-                selectedImage = File(mPaths!![0])
-                outputFileUri = mPaths[0]
-                selectedImagesArraylist.add(mPaths[0])
-                setAdapter()
+    private fun fetchLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            ) !=
+            PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), permissionCode
+            )
+            return
+        }
+        val task = fusedLocationProviderClient.lastLocation
+        task.addOnSuccessListener {
+            if (it != null) {
+                currentLocation = it
             }
+        }
+    }
 
+    private fun getSelectedImage() {
+        (activity as HomeActivity).getOnActivityResult(onActivityResultData { bundle ->
+            linearLayoutChoosePhoto.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+            val mPaths = bundle?.getStringArrayList(Constants.IMAGE_PATHS)
+
+            selectedImage = File(mPaths!![0])
+            outputFileUri = mPaths[0]
+            selectedImagesArraylist.add(mPaths[0])
+            setAdapter()
         })
 
     }
@@ -108,7 +135,7 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
 
 
     override fun onClick(p0: View?) {
-        when (p0!!.getId()) {
+        when (p0!!.id) {
             R.id.imageViewChoosePhoto -> {
                 if (selectedImagesArraylist.size > 4) {
                     Toast.makeText(activity, "You already selected 5 photos", Toast.LENGTH_SHORT)
@@ -120,14 +147,15 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
             }
 
             R.id.buttonPreview ->
-                if (selectedImage != null)
+                if (selectedImage != null) {
+                    log(outputFileUri)
                     startActivity(
                         Intent(activity, PreviewImageActivity::class.java).putExtra(
                             "imageuri",
                             outputFileUri
                         )
                     )
-                else
+                } else
                     Toast.makeText(
                         activity,
                         "You need to add image first.",
@@ -139,22 +167,29 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
             }
 
             R.id.linearLayoutNext -> {
-                if (imageUriList.size < 1) {
-                    Toast.makeText(activity, "Please select photo", Toast.LENGTH_SHORT).show()
-                } else if (editTextAbout.text.toString().isEmpty()) {
-                    Toast.makeText(activity, "Please tell us About Business", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    // messageRef.push().setValue(BusinessDetailsFragment.requestJson)
-                    Toast.makeText(activity, "Ad Posted Successfully", Toast.LENGTH_SHORT)
-                        .show()
+                when {
+                    imageUriList.size < 1 -> {
+                        Toast.makeText(activity, "Please select photo", Toast.LENGTH_SHORT).show()
+                    }
+                    editTextAbout.text.toString().isEmpty() -> {
+                        Toast.makeText(
+                            activity,
+                            "Please tell us About Business",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                    else -> {
+                        // messageRef.push().setValue(BusinessDetailsFragment.requestJson)
+                        Toast.makeText(activity, "Ad Posted Successfully", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
             R.id.buttonUpload -> {
                 if (selectedImage == null || !selectedImage!!.exists()) {
                     Toast.makeText(activity, "Please select photo", Toast.LENGTH_SHORT).show()
-                }
-                else {
+                } else {
                     saveFileInFirebaseStorage()
                 }
             }
@@ -162,7 +197,11 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        @NonNull permissions: Array<String>,
+        @NonNull grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         showBottomSheetDialog()
     }
@@ -177,12 +216,12 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
         }
     }
 
-    fun showBottomSheetDialog() {
+    private fun showBottomSheetDialog() {
         val layoutInflater = activity!!.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = layoutInflater.inflate(R.layout.bottomsheet_dialog, null)
         dialog = BottomSheetDialog(activity!!)
         dialog!!.setContentView(view)
-        dialog!!.getWindow()!!.findViewById<View>(R.id.design_bottom_sheet)
+        dialog!!.window!!.findViewById<View>(R.id.design_bottom_sheet)
             .setBackgroundResource(android.R.color.transparent)
         val textViewGallery = dialog!!.findViewById<TextView>(R.id.textViewPhoto)
         val textViewCamera = dialog!!.findViewById<TextView>(R.id.textViewCamera)
@@ -191,18 +230,18 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
             dialog!!.dismiss()
             chooseImage(ImagePicker.Mode.CAMERA)
         }
-        textViewGallery!!.setOnClickListener(View.OnClickListener {
+        textViewGallery!!.setOnClickListener {
             dialog!!.dismiss()
             chooseImage(ImagePicker.Mode.GALLERY)
-        })
-        textViewCancel!!.setOnClickListener(View.OnClickListener { dialog!!.dismiss() })
+        }
+        textViewCancel!!.setOnClickListener { dialog!!.dismiss() }
         dialog!!.show()
         val lp = WindowManager.LayoutParams()
-        val window = dialog!!.getWindow()
-        lp.copyFrom(window!!.getAttributes())
+        val window = dialog!!.window
+        lp.copyFrom(window!!.attributes)
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
-        window!!.setAttributes(lp)
+        window.attributes = lp
     }
 
     private fun chooseImage(mode: ImagePicker.Mode) {
@@ -225,13 +264,13 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
     }
 
     private fun saveFileInFirebaseStorage() {
-        showUploadProgress("Uploading Image "+(count+1))
+        showUploadProgress("Uploading Image " + (count + 1))
         val file = File(selectedImagesArraylist[count])
         uploadImage(file, file.name, count)
     }
 
-    fun uploadImage(file: File, name: String, i: Int) {
-        //create reference to images folder and assing a name to the file that will be uploaded
+    private fun uploadImage(file: File, name: String, i: Int) {
+        //create reference to images folder and assign a name to the file that will be uploaded
         imageRef = storageRef.child("images/$name")
         //creating and showing progress dialog
 
@@ -244,30 +283,22 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
         }
 
         // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnSuccessListener(
-            object : OnSuccessListener<UploadTask.TaskSnapshot> {
-                override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
-
-                    imageRef.downloadUrl.addOnSuccessListener {
-                        count++
-                        val url = it.toString()
-                        Log.d("FirebaseManager", it.toString())
-                        imageUriList.add(url)
-                        progressDialog?.dismiss()
-                        if (count == selectedImagesArraylist.size) {
-                            postAd()
-                        }
-                        else{
-                            saveFileInFirebaseStorage()
-                        }
-                    }
+        uploadTask.addOnSuccessListener {
+            imageRef.downloadUrl.addOnSuccessListener {
+                count++
+                val url = it.toString()
+                log(it.toString())
+                imageUriList.add(url)
+                progressDialog?.dismiss()
+                if (count == selectedImagesArraylist.size) {
+                    postAd()
+                } else {
+                    saveFileInFirebaseStorage()
                 }
             }
-        )
+        }
 
-
-
-        uploadTask.addOnFailureListener{ exception ->
+        uploadTask.addOnFailureListener { exception ->
             // Handle unsuccessful uploads
             Toast.makeText(activity, "Error in uploading!${exception.message}", Toast.LENGTH_SHORT)
                 .show()
@@ -276,7 +307,7 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
     }
 
     private fun postAd() {
-        var docId = db.collection(arguments?.getString(Constants.KEY)!!).document().id
+        val docId = db.collection(arguments?.getString(Constants.KEY)!!).document().id
         val docData = hashMapOf(
             Constants.ADDRESS to arguments?.getString(Constants.ADDRESS),
             Constants.BRAND to arguments?.getString(Constants.BRAND),
@@ -290,23 +321,23 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
             Constants.Id to docId,
             Constants.USER_ID to SharedPref(activity!!).getString(Constants.USER_ID),
             Constants.CREATED_Date to Date(),
-            "images" to imageUriList
+            "images" to imageUriList,
+            "latitude" to currentLocation.latitude,
+            "longitude" to currentLocation.longitude
         )
-
 
         db.collection(arguments?.getString(Constants.KEY)!!)
 
             .add(docData)
             .addOnSuccessListener {
-                Log.d(TAG, "DocumentSnapshot successfully written!")
-                Log.w(TAG, "DataasId" + it.id)
+                log("DocumentSnapshot successfully written!")
+                log("DataId" + it.id)
 
                 updateDocId(it.id)
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                log("Error writing document: $e")
             }
-
     }
 
     private fun updateDocId(id: Any) {
@@ -319,7 +350,6 @@ class UploadPhotoFragment : BaseFragment(), UploadImagesAdapter.AddImage, View.O
                 Toast.makeText(activity, "Ad Posted Successfully", Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.action_upload_photo_to_my_ads)
             }
-
     }
 
 }

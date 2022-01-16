@@ -13,8 +13,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 
 class CategoriesAdapter(
-    var categoriesList: MutableList<CategoriesModel>,
-    var mClickListener: ItemClickListener
+    private var categoriesList: MutableList<CategoriesModel>,
+    private var mClickListener: ItemClickListener
 ) :
     RecyclerView.Adapter<CategoriesAdapter.DashBoardViewHolder>() {
 
@@ -28,8 +28,7 @@ class CategoriesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DashBoardViewHolder {
         context = parent.context
         val viewHolder = LayoutInflater.from(parent.context).inflate(
-            R.layout.adapter_categories
-            , parent, false
+            R.layout.adapter_categories, parent, false
         )
         return DashBoardViewHolder(
             viewHolder
@@ -42,11 +41,10 @@ class CategoriesAdapter(
 
     override fun onBindViewHolder(holder: DashBoardViewHolder, position: Int) {
 
-
-        holder.textViewTitle.text = categoriesList.get(position).key
+        holder.textViewTitle.text = categoriesList[position].key
         Glide.with(context)
-            .load(categoriesList.get(position).image)
-            .placeholder(com.app.olx.R.drawable.ic_placeholder)
+            .load(categoriesList[position].image)
+            .placeholder(R.drawable.ic_placeholder)
             .into(holder.imageView)
         holder.itemView.setOnClickListener {
             mClickListener.onItemClick(position)
@@ -57,8 +55,8 @@ class CategoriesAdapter(
     }
 
     class DashBoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView = itemView.findViewById<CircleImageView>(com.app.olx.R.id.ivIcon)!!
-        val textViewTitle = itemView.findViewById<TextView>(com.app.olx.R.id.tvTitle)!!
+        val imageView = itemView.findViewById<CircleImageView>(R.id.ivIcon)!!
+        val textViewTitle = itemView.findViewById<TextView>(R.id.tvTitle)!!
     }
 
     interface ItemClickListener {

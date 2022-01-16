@@ -13,6 +13,8 @@ class DataItemModel() {
     val year = ""
     val address = ""
     val phone = ""
-    val createdDate:Date? = null
+    val createdDate: Date? = null
     val images = arrayListOf(String())
+    val latitude: Double = 0.0
+    val longitude: Double = 0.0
 }

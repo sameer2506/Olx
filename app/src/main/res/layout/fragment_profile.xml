@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_24">
-
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageViewAvatar"
@@ -35,11 +31,10 @@
                 android:paddingEnd="@dimen/dp_8"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:textStyle="bold">
-
-            </androidx.appcompat.widget.AppCompatTextView>
+                android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvName"
@@ -47,12 +42,8 @@
                 android:layout_toEndOf="@+id/imageViewAvatar"
                 android:paddingStart="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_8"
-                android:id="@+id/tvEmail"
-                android:textSize="@dimen/dp_16"
-                android:textColor="@android:color/black">
-
-            </androidx.appcompat.widget.AppCompatTextView>
-
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/dp_16" />
 
         </RelativeLayout>
 
@@ -60,7 +51,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@android:color/darker_gray" />
-
 
         <LinearLayout
 
@@ -93,7 +83,6 @@
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
-
             </LinearLayout>
 
             <ImageView
@@ -102,7 +91,6 @@
                 android:layout_gravity="center"
                 android:layout_weight=".1"
                 android:src="@drawable/arrow_right" />
-
 
         </LinearLayout>
 
@@ -141,7 +129,6 @@
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
-
             </LinearLayout>
 
             <ImageView
@@ -160,25 +147,29 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Current Location"
+        android:textSize="@dimen/dp_18"
+        android:textStyle="bold" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="@dimen/dp_6"
-            android:gravity="center"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:text="version 1.0"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium">
-
-        </androidx.appcompat.widget.AppCompatTextView>
-
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp" />
 
     </RelativeLayout>
-
 
 </LinearLayout>
