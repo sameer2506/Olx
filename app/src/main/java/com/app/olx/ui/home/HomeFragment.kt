@@ -3,18 +3,18 @@ package com.app.olx.ui.home
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.olx.BaseFragment
+import com.app.olx.R
 import com.app.olx.model.CategoriesModel
 import com.app.olx.ui.home.adapter.CategoriesAdapter
 import com.app.olx.utils.Constants
 import com.app.olx.utils.SharedPref
+import com.app.olx.utils.log
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -23,22 +23,14 @@ class HomeFragment : BaseFragment(), CategoriesAdapter.ItemClickListener {
 
     private lateinit var categoriesModel: MutableList<CategoriesModel>
     private lateinit var categoriesAdapter: CategoriesAdapter
-    private var TAG = HomeFragment::class.java.simpleName
-    val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val root = inflater.inflate(com.app.olx.R.layout.fragment_home, container, false)
-
-        return root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,22 +51,21 @@ class HomeFragment : BaseFragment(), CategoriesAdapter.ItemClickListener {
                 setAdapter()
             }
             .addOnFailureListener {
-                Log.d(TAG, it.message)
-
+                log(it.localizedMessage!!)
             }
     }
 
     private fun setAdapter() {
-        rv_categories.layoutManager = GridLayoutManager(context, 3)!!
+        rv_categories.layoutManager = GridLayoutManager(context, 3)
         categoriesAdapter = CategoriesAdapter(categoriesModel, this)
         rv_categories.adapter = categoriesAdapter
     }
 
     override fun onItemClick(position: Int) {
         if (clickWait()) {
-            var bundle = Bundle()
-            bundle.putString("key", categoriesModel.get(position).key)
-            findNavController().navigate(com.app.olx.R.id.action_home_to_browse_category, bundle)
+            val bundle = Bundle()
+            bundle.putString("key", categoriesModel[position].key)
+            findNavController().navigate(R.id.action_home_to_browse_category, bundle)
         }
     }
 
@@ -99,17 +90,12 @@ class HomeFragment : BaseFragment(), CategoriesAdapter.ItemClickListener {
         for (d in categoriesModel) {
             //or use .equal(text) with you want equal match
             //use .toLowerCase() for better matches
-            if (d.key.contains(text.capitalize())||d.key.contains(text)) {
+            if (d.key.contains(text.capitalize()) || d.key.contains(text)) {
                 temp.add(d)
             }
         }
         //update recyclerview
         categoriesAdapter.updateList(temp)
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
 }

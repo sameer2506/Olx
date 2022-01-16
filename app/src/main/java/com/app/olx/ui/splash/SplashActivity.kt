@@ -10,7 +10,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.util.Base64
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.app.olx.BaseActivity
 import com.app.olx.HomeActivity
@@ -19,11 +18,10 @@ import com.app.olx.ui.login.LoginActivity
 import com.app.olx.utils.Constants
 import com.app.olx.utils.MarshMellowHelper
 import com.app.olx.utils.SharedPref
+import com.app.olx.utils.log
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import java.io.IOException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -54,12 +52,10 @@ class SplashActivity : BaseActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         locationCallBack()
-        loctionPermissions()
+        locationPermissions()
         getHashKey()
 
     }
-
-
 
     internal val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
@@ -75,15 +71,7 @@ class SplashActivity : BaseActivity() {
         }
     }
 
-
-    public override fun onDestroy() {
-        if (mDelayHandler != null) {
-            mDelayHandler!!.removeCallbacks(mRunnable)
-        }
-        super.onDestroy()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-    private fun loctionPermissions() {
+    private fun locationPermissions() {
         marshMellowHelper = MarshMellowHelper(
             this, arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -97,61 +85,58 @@ class SplashActivity : BaseActivity() {
 
     private fun enableGPS() {
         locationRequest = LocationRequest.create()
-        locationRequest!!.setInterval(1000) // milliseconds
-        locationRequest!!.setFastestInterval(1000) // the fastest rate in milliseconds at which your app can handle location updates
-        locationRequest!!.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        locationRequest!!.interval = 1000 // milliseconds
+        locationRequest!!.fastestInterval =
+            1000 // the fastest rate in milliseconds at which your app can handle location updates
+        locationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         val builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest!!)
 
 
         val task =
-            LocationServices.getSettingsClient(this!!).checkLocationSettings(builder.build())
+            LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
 
 
-        task.addOnCompleteListener(object : OnCompleteListener<LocationSettingsResponse> {
-            override fun onComplete(task: Task<LocationSettingsResponse>) {
-                try {
-                    val response = task.getResult(ApiException::class.java)
-                    // All location settings are satisfied. The client can initialize location
-                    // requests here.
-                    startLocationUpdates()
+        task.addOnCompleteListener { result ->
+            try {
+                val response = result.getResult(ApiException::class.java)
+                // All location settings are satisfied. The client can initialize location
+                // requests here.
+                startLocationUpdates()
 
-
-                } catch (exception: ApiException) {
-                    when (exception.statusCode) {
-                        LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
-                            // Location settings are not satisfied. But could be fixed by showing the
-                            // user a dialog.
-                            try {
-                                // Cast to a resolvable exception.
-                                val resolvable = exception as ResolvableApiException
-                                // Show the dialog by calling startResolutionForResult(),
-                                // and check the result in onActivityResult().
-                                resolvable.startResolutionForResult(
-                                    this@SplashActivity,
-                                    ENABLE_GPS_CODE
-                                )
-                            } catch (e: IntentSender.SendIntentException) {
-                                // Ignore the error.
-                            } catch (e: ClassCastException) {
-                                // Ignore, should be an impossible error.
-                            }
-
-                        LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+            } catch (exception: ApiException) {
+                when (exception.statusCode) {
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                        // Location settings are not satisfied. But could be fixed by showing the
+                        // user a dialog.
+                        try {
+                            // Cast to a resolvable exception.
+                            val resolvable = exception as ResolvableApiException
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            resolvable.startResolutionForResult(
+                                this@SplashActivity,
+                                ENABLE_GPS_CODE
+                            )
+                        } catch (e: IntentSender.SendIntentException) {
+                            // Ignore the error.
+                        } catch (e: ClassCastException) {
+                            // Ignore, should be an impossible error.
                         }
-                    }
-                    // Location settings are not satisfied. However, we have no way to fix the
-                    // settings so we won't show the dialog.
-                }
 
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                    }
+                }
+                // Location settings are not satisfied. However, we have no way to fix the
+                // settings so we won't show the dialog.
             }
-        })
+        }
     }
 
     private fun locationCallBack() {
         locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                locationResult ?: return
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult
 
                 if (locationResult.locations.isNotEmpty()) {
                     // get latest location
@@ -169,7 +154,6 @@ class SplashActivity : BaseActivity() {
                     // use your location object
                     // get latitude , longitude and other info from this
                 }
-
 
             }
         }
@@ -205,9 +189,14 @@ class SplashActivity : BaseActivity() {
 
 
     private fun startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -216,7 +205,7 @@ class SplashActivity : BaseActivity() {
             return
         }
         fusedLocationClient.requestLocationUpdates(
-            locationRequest,
+            locationRequest!!,
             locationCallback,
             null /* Looper */
         )
@@ -231,9 +220,10 @@ class SplashActivity : BaseActivity() {
                 location.longitude, 1
             )
             cityName = addresses[0].locality
-        }catch(e: IOException) {
-            when{
-                e.message == "grpc failed" -> {/* display a Toast or Snackbar instead*/ }
+        } catch (e: IOException) {
+            when (e.message) {
+                "grpc failed" -> {/* display a Toast or Snackbar instead*/
+                }
                 else -> throw e
             }
         }
@@ -246,19 +236,17 @@ class SplashActivity : BaseActivity() {
         try {
             info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
             for (signature in info.signatures) {
-                val md: MessageDigest
-                md = MessageDigest.getInstance("SHA")
+                val md: MessageDigest = MessageDigest.getInstance("SHA")
                 md.update(signature.toByteArray())
                 val something = String(Base64.encode(md.digest(), 0))
-                //String something = new String(Base64.encodeBytes(md.digest()));
-                Log.e("hash key", something)
+                log(something)
             }
         } catch (e1: PackageManager.NameNotFoundException) {
-            Log.e("name not found", e1.toString())
+            log(e1.toString())
         } catch (e: NoSuchAlgorithmException) {
-            Log.e("no such an algorithm", e.toString())
+            log(e.toString())
         } catch (e: Exception) {
-            Log.e("exception", e.toString())
+            log(e.toString())
         }
     }
 
@@ -267,6 +255,14 @@ class SplashActivity : BaseActivity() {
         if (requestCode == ENABLE_GPS_CODE) {
             startLocationUpdates()
         }
-        }
-
     }
+
+    public override fun onDestroy() {
+        if (mDelayHandler != null) {
+            mDelayHandler!!.removeCallbacks(mRunnable)
+        }
+        super.onDestroy()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+}

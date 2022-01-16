@@ -10,15 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 
-open class  BaseFragment:Fragment() {
-    private var mLastClickTime:Long= 0
+open class BaseFragment : Fragment() {
+    private var mLastClickTime: Long = 0
     var progressDialog: ProgressDialog? = null
-    lateinit var mDialog:Dialog
-
+    lateinit var mDialog: Dialog
 
     fun showUploadProgress(s: String) {
         progressDialog = ProgressDialog(activity)
-        progressDialog!!.setMax(100)
+        progressDialog!!.max = 100
         progressDialog!!.setMessage(s)
         progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         progressDialog!!.show()
@@ -44,15 +43,18 @@ open class  BaseFragment:Fragment() {
     fun showMessage(context: Context, view: View, message: String) {
         val snakbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
         snakbar.view.setBackgroundColor(
-            ContextCompat.getColor(context,
-                android.R.color.white))
+            ContextCompat.getColor(
+                context,
+                android.R.color.white
+            )
+        )
         if (snakbar.isShown) {
             snakbar.dismiss()
         }
         snakbar.show()
     }
 
-    fun clickWait():Boolean {
+    fun clickWait(): Boolean {
         if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
             return false
         } else {

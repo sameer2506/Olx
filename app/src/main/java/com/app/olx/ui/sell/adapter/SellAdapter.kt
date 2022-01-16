@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 
 
 class SellAdapter(
-    var categoriesList: MutableList<CategoriesModel>,
-    var mClickListener: ItemClickListener
+    private var categoriesList: MutableList<CategoriesModel>,
+    private var mClickListener: ItemClickListener
 ) :
     RecyclerView.Adapter<SellAdapter.DashBoardViewHolder>() {
 
@@ -23,8 +23,7 @@ class SellAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DashBoardViewHolder {
         context = parent.context
         val viewHolder = LayoutInflater.from(parent.context).inflate(
-            R.layout.adapter_sell
-            , parent, false
+            R.layout.adapter_sell, parent, false
         )
         return DashBoardViewHolder(
             viewHolder
@@ -37,10 +36,9 @@ class SellAdapter(
 
     override fun onBindViewHolder(holder: DashBoardViewHolder, position: Int) {
 
-
-        holder.textViewTitle.text  = categoriesList.get(position).key
+        holder.textViewTitle.text = categoriesList[position].key
         Glide.with(context)
-            .load(categoriesList.get(position).image_bw)
+            .load(categoriesList[position].image_bw)
             .placeholder(R.drawable.ic_placeholder)
             .into(holder.imageView)
 

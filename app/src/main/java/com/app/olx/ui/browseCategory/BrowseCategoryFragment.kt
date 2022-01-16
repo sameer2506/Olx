@@ -3,7 +3,6 @@ package com.app.olx.ui.browseCategory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.app.olx.R
 import com.app.olx.model.DataItemModel
 import com.app.olx.ui.browseCategory.adapter.BrowseCategoriesAdapter
 import com.app.olx.utils.Constants
+import com.app.olx.utils.log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_browse_categories.*
@@ -24,8 +24,7 @@ class BrowseCategoryFragment : BaseFragment(),
     private lateinit var documentIdList: MutableList<DocumentSnapshot>
     private lateinit var dataItemModel: MutableList<DataItemModel>
     private lateinit var categoriesAdapter: BrowseCategoriesAdapter
-    val db = FirebaseFirestore.getInstance()
-    private var TAG = BrowseCategoryFragment::class.java.simpleName
+    private val db = FirebaseFirestore.getInstance()
     private var key = ""
 
     override fun onCreateView(
@@ -34,9 +33,7 @@ class BrowseCategoryFragment : BaseFragment(),
         savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_browse_categories, container, false)
-
-        return root
+        return inflater.inflate(R.layout.fragment_browse_categories, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +82,6 @@ class BrowseCategoryFragment : BaseFragment(),
     }
 
     private fun getList() {
-
         showProgressBar()
         db.collection(key)
             .get().addOnSuccessListener { result ->
@@ -99,8 +95,7 @@ class BrowseCategoryFragment : BaseFragment(),
                 }
             }
             .addOnFailureListener {
-                Log.d(TAG, it.message)
-
+                log(it.localizedMessage!!)
             }
     }
 
@@ -113,7 +108,7 @@ class BrowseCategoryFragment : BaseFragment(),
     }
 
     override fun onItemClick(position: Int) {
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putString(Constants.DOCUMENT_ID, documentIdList.get(position).id)
         bundle.putString(Constants.KEY, key)
         findNavController().navigate(R.id.action_browse_category_to_detail, bundle)

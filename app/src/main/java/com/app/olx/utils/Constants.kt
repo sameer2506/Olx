@@ -1,7 +1,6 @@
 package com.app.olx.utils
 
 object Constants {
-
     val SharedPrefName = "OLX"
     val USER_ID = "userId"
     val CREATED_Date = "createdDate"
@@ -26,8 +25,5 @@ object Constants {
     val CITY_NAME = "city_name"
     val CATEGORIES = "Categories"
     val Id = "id"
-    val CAR ="Car"
-
-
-
+    val CAR = "Car"
 }

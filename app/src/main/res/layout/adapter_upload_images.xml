@@ -12,5 +12,4 @@
         android:src="@drawable/ic_add_photo"
         android:visibility="visible" />
 
-
 </RelativeLayout>

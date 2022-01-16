@@ -14,17 +14,16 @@ import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 
 class MyAdsAdapter(
-    var dataItemModel: MutableList<DataItemModel>,
-    var mClickListener: ItemClickListener) :
-    RecyclerView.Adapter<MyAdsAdapter.ViewHolder>() {
+    private var dataItemModel: MutableList<DataItemModel>,
+    private var mClickListener: ItemClickListener
+) : RecyclerView.Adapter<MyAdsAdapter.ViewHolder>() {
 
     lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         val viewHolder = LayoutInflater.from(parent.context).inflate(
-            R.layout.adapter_browse_category
-            , parent, false
+            R.layout.adapter_browse_category, parent, false
         )
         return ViewHolder(
             viewHolder
@@ -37,17 +36,17 @@ class MyAdsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.textViewPrice.setText(Constants.CURRENCY_SYMBOL + dataItemModel.get(position).price)
-        holder.tvAddress.setText(dataItemModel.get(position).address)
-        holder.tvBrand.setText(dataItemModel.get(position).brand)
+        holder.textViewPrice.text = Constants.CURRENCY_SYMBOL + dataItemModel.get(position).price
+        holder.tvAddress.text = dataItemModel[position].address
+        holder.tvBrand.text = dataItemModel[position].brand
         Glide.with(context)
-            .load(dataItemModel.get(position).images.get(0))
+            .load(dataItemModel[position].images[0])
             .placeholder(R.drawable.ic_placeholder)
             .into(holder.imageView)
 
         val sdf = SimpleDateFormat("dd/MM/yyyy")
-        val formattedDate = sdf.format(dataItemModel.get(position).createdDate?.time!!)
-        holder.tvDate.setText(formattedDate)
+        val formattedDate = sdf.format(dataItemModel[position].createdDate?.time!!)
+        holder.tvDate.text = formattedDate
 
         holder.itemView.setOnClickListener {
             mClickListener.onItemClick(position)

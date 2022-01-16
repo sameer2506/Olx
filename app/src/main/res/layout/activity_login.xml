@@ -19,10 +19,7 @@
             android:text="@string/app_name"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/dp_84"
-            android:textStyle="bold">
-
-
-        </androidx.appcompat.widget.AppCompatTextView>
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -31,11 +28,7 @@
             android:text="@string/str_india"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold">
-
-
-        </androidx.appcompat.widget.AppCompatTextView>
-
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -66,9 +59,10 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:text="@string/continue_with_google"
-                android:textColor="@color/colorPrimaryDark"></androidx.appcompat.widget.AppCompatButton>
+                android:textColor="@color/colorPrimaryDark" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="@dimen/dp_280"
             android:layout_height="wrap_content"
@@ -88,20 +82,18 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:text="@string/continue_with_facebook"
-                android:textColor="@color/colorPrimaryDark"></androidx.appcompat.widget.AppCompatButton>
-
-
+                android:textColor="@color/colorPrimaryDark" />
 
         </LinearLayout>
+
         <com.facebook.login.widget.LoginButton
             android:id="@+id/fbLoginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:visibility="gone"
-            android:layout_marginBottom="30dp" />
-
+            android:layout_marginBottom="30dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,7 +102,6 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_16">
 
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,11 +109,7 @@
                 android:text="@string/str_accepting"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@android:color/white">
-
-
-            </androidx.appcompat.widget.AppCompatTextView>
-
+                android:textColor="@android:color/white" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTerms"
@@ -132,14 +119,10 @@
                 android:text="@string/str_terms"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@android:color/white">
-
-            </androidx.appcompat.widget.AppCompatTextView>
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 
-
     </LinearLayout>
-
 
 </LinearLayout>

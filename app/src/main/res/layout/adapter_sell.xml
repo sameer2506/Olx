@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_12"
+        android:layout_height="wrap_content"
         android:background="@drawable/box_grey_bg_white"
-        android:layout_height="wrap_content">
-
+        android:orientation="vertical"
+        android:padding="@dimen/dp_12">
 
         <ImageView
+            android:id="@+id/ivIcon"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
-            android:id="@+id/ivIcon"
             android:layout_gravity="center"
             android:padding="@dimen/dp_8"
-            android:src="@drawable/car"/>
+            android:src="@drawable/car" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Car"
-            android:layout_marginTop="@dimen/dp_8"
             android:layout_gravity="center"
-            android:textColor="@android:color/black"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="Car"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:id="@+id/tvTitle"/>
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
